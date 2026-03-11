@@ -1,5 +1,15 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/libreoffice-wasm/soffice.wasm",
+      "destination": "/libreoffice-wasm/soffice.wasm.gz"
+    },
+    {
+      "source": "/libreoffice-wasm/soffice.data",
+      "destination": "/libreoffice-wasm/soffice.data.gz"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -34,7 +44,7 @@
       ]
     },
     {
-      "source": "/libreoffice-wasm/soffice.wasm.gz",
+      "source": "/libreoffice-wasm/soffice.wasm",
       "headers": [
         { "key": "Content-Type", "value": "application/wasm" },
         { "key": "Content-Encoding", "value": "gzip" },
@@ -42,7 +52,7 @@
       ]
     },
     {
-      "source": "/libreoffice-wasm/soffice.data.gz",
+      "source": "/libreoffice-wasm/soffice.data",
       "headers": [
         { "key": "Content-Type", "value": "application/octet-stream" },
         { "key": "Content-Encoding", "value": "gzip" },
