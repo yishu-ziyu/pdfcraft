@@ -10,4 +10,7 @@ export const routing = defineRouting({
 
   // Always use locale prefix in URL
   localePrefix: 'always',
+
+  // Use the product default locale for unprefixed visits.
+  localeDetection: false,
 });
