@@ -78,7 +78,7 @@ export function sanitizeHtml(html: string): string {
         if ((attrName === 'href' || attrName === 'src') && !isSafeUrl(attrValue)) {
           continue;
         }
-        cleanAttrs.push(`${attrName}="${attrValue.replace(/"/g, '&quot;')}"`);
+        cleanAttrs.push(`${attrName}="${attrValue.replace(/"/g, '"')}"`);
         // Force safe link behavior
         if (attrName === 'href' && tag === 'a') {
           cleanAttrs.push('rel="noopener noreferrer"');
@@ -101,11 +101,24 @@ export function sanitizeHtml(html: string): string {
  */
 export function escapeHtml(text: string): string {
   const map: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
+    '&': '&',
+    '<': '<',
+    '>': '>',
+    '"': '"',
     "'": '&#039;',
   };
   return text.replace(/[&<>"']/g, char => map[char]);
+}
+
+/**
+ * Strip XSS vectors from SVG markup before rendering with dangerouslySetInnerHTML.
+ */
+export function sanitizeSvg(svg: string): string {
+  let result = String(svg || '');
+  result = result.replace(/<\?xml[^>]*\?>/gi, '');
+  result = result.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+  result = result.replace(/<foreignObject\b[^>]*>[\s\S]*?<\/foreignObject>/gi, '');
+  result = result.replace(/\son[a-zA-Z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+  result = result.replace(/\s(xlink:)?href\s*=\s*(['"])\s*javascript:[^'"]*\2/gi, '');
+  return result;
 }
